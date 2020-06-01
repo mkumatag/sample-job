@@ -14,15 +14,16 @@ func handleFlags() {
         framework.RegisterCommonFlags(flag.CommandLine)
         framework.RegisterClusterFlags(flag.CommandLine)
         flag.Parse()
+	 if framework.TestContext.KubeConfig == ""{
+                klog.Infof("Couldnt get kubeconfig. set environment variable KUBECONFIG,Path to kubeconfig containing embedded authinfo")
+                klog.Infof("Will try to use in-cluster config if KUBECONFIG is not available")
+        }
+
         framework.AfterReadingAllFlags(&framework.TestContext)
 }
 func init() {
 	testing.Init()
 	handleFlags()
-	if framework.TestContext.KubeConfig == ""{
-                klog.Infof("Couldnt get kubeconfig. set environment variable KUBECONFIG,Path to kubeconfig containing embedded authinfo")
-                klog.Infof("Will try to use in-cluster config if KUBECONFIG is not available")
-	}
 }
 func TestCart(t *testing.T) {
 	RegisterFailHandler(Fail)
